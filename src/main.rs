@@ -14,8 +14,8 @@ async fn main() {
     let users = warp::any().map(move || users.clone());
 
     let websocket_filter = warp::path!("ws" / String)
-        .then(|login_id| transform_param_to_role(login_id))
-        .and_then(|role| no_anonymous_role(role))
+        .then(transform_param_to_role)
+        .and_then(no_anonymous_role)
         .and(warp::ws())
         .and(users)
         .map(|role: Role, ws: warp::ws::Ws, users| {

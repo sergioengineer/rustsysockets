@@ -1,3 +1,6 @@
+use std::error;
+use std::fmt::Error;
+use std::sync::TryLockError;
 use std::sync::atomic::{Ordering, AtomicUsize};
 
 use futures::{StreamExt, FutureExt};
@@ -28,9 +31,9 @@ pub async fn user_connected(ws: WebSocket, users: Users, role: Role) {
     }));
 
     let user: User = User { id: user_id, ws: tx, role };
-    let user2 = user.clone();
-    users.write().await.insert(user_id, user);
-
+    {
+        users.write().await.insert(user_id, user);
+    }
     let users2 = users.clone();
 
     while let Some(result) = user_ws_rx.next().await {
@@ -40,8 +43,17 @@ pub async fn user_connected(ws: WebSocket, users: Users, role: Role) {
                 break;
             }
         };
-        user_message(&user2, msg, &users).await;
+        
+        match users.try_read() {
+            Ok(map)=> {
+                match map.get(&user_id) {
+                    Some(usr) => {user_message(&usr, msg, &users).await;}
+                    _ => {}
+                }
+            },
+            Err(_)=> {}
+        }
     }
 
-    user_disconnected(&user2, &users2).await;
+    user_disconnected(user_id, &users2).await;
 }
