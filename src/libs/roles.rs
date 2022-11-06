@@ -1,6 +1,6 @@
 #[derive(Clone, PartialEq, Eq)]
 pub enum Role{
-    Admin,
-    User,
+    Admin(String),
+    User(String),
     Anonymous
 }

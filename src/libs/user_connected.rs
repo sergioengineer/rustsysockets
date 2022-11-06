@@ -14,8 +14,8 @@ static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
 
 pub async fn user_connected(ws: WebSocket, users: Users, role: Role) {
     match role {
-        Role::Admin => eprintln!("Admin logged in"),
-        Role::User => eprintln!("User logged in"),
+        Role::Admin(_) => eprintln!("Admin logged in"),
+        Role::User(_) => eprintln!("User logged in"),
         Role::Anonymous => eprintln!("Anonymous tried to log in")
     }
 

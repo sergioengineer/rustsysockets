@@ -9,3 +9,6 @@ tokio = { version = "1", features = ["full"] }
 warp = "0.3"
 futures = "*"
 tokio-stream = { version = "0.1.1", features = ["net"] }
+reqwest = "0.11"
+dotenv = "0.15.0"
+serde_json = "*"
