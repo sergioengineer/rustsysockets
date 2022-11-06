@@ -1,6 +1,3 @@
-use std::error;
-use std::fmt::Error;
-use std::sync::TryLockError;
 use std::sync::atomic::{Ordering, AtomicUsize};
 
 use futures::{StreamExt, FutureExt};
@@ -14,8 +11,8 @@ static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
 
 pub async fn user_connected(ws: WebSocket, users: Users, role: Role) {
     match role {
-        Role::Admin(_) => eprintln!("Admin logged in"),
-        Role::User(_) => eprintln!("User logged in"),
+        Role::Admin(_) => eprintln!("Admin logged in. info:"),
+        Role::User(_) => eprintln!("User logged in."),
         Role::Anonymous => eprintln!("Anonymous tried to log in")
     }
 
@@ -43,8 +40,8 @@ pub async fn user_connected(ws: WebSocket, users: Users, role: Role) {
                 break;
             }
         };
-        
-        match users.try_read() {
+
+       match users.try_read() {
             Ok(map)=> {
                 match map.get(&user_id) {
                     Some(usr) => {user_message(&usr, msg, &users).await;}
