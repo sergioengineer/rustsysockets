@@ -4,6 +4,7 @@ use warp::ws::Message;
 use super::{user::{Users, User}, Role};
 
 pub async fn user_message(sender: &User, msg: Message, users: &Users) {
+    //Only admins get to broadcast messages
     match sender.role {
         Role::Admin(_)=>{}
         _=>{
